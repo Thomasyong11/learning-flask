@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Blog Page{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-offset-3 col-md-6">
+
+      <a href="{{ url_for('index_page') }}"><h1> {{ blog.name }} </h1></a>
+
+      <hr />
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+          <div id="message">
+            <ul class="flashes">
+
+              {% for message in messages %}
+
+              <li>{{ message }}</li>
+
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% if session["username"] %}
+      <p>Welcome, {{ session["username"] }}</p>
+      {% endif %}
+
+      <div class="post-list">
+        {% if post.items %}
+          {% for post in post.items %}
+            <div class="post-item">
+
+              <div class="col-md-9">
+                <h4><a href="{{ url_for('article_page', slug=post.slug) }}"> {{ post.title }} </a></h4>
+                <p class="body-post">{{ post.body[:220] }}</p>
+                <p class="text-muted"> Posted by {{ post.author.fullname }} on {{ post.published_date.strftime("%Y-%m-%d") }} in {{ post.category.name}} </p>
+              </div>
+
+              <div class="col-md-3">
+                {% if post.image %}
+                <img src="{{ post.imagesrc }}" class="img-rounded" height="60px">
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+       <div class="post.paginate">
+        {% if post.has_prev %}
+          <a href="{{ url_for('index_page', page=post.prev_num) }}">&lt;&lt; Newer posts </a>
+        {% else %}
+          &lt;&lt; Newer posts
+        {% endif %}
+
+        {% if post.has_next %}
+          <a href="{{ url_for('index_page', page=post.next_num) }}"> Older posts &gt;&gt; </a>
+        {% else %}
+          Older posts &gt;&gt;
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
